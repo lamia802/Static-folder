@@ -20,7 +20,7 @@ def get_all(request):
         output = ",".join([q.describtion for q in todo_list])
         return HttpResponse(output)
     else:
-        return HttpResponse(f"Not available data")
+        return HttpResponse(f"Not available hhsd data")
 
 
 
