@@ -1,42 +1,92 @@
-from django.shortcuts import render
+from django.shortcuts import render , redirect
 from django.http import HttpResponse
 from .models import Todo
 # Create your views here.
+
+
+def home(request):
+    return render(request, "home.html")
+
+
+
+def about(request):
+    return render(request, "about.html")
+
 
 
 def get_all(request):
     print("request",request)
     
     todo_list = Todo.objects.all().order_by("-creat_at")
-    if todo_list:
+    context = {
+        "data": todo_list,
+        "html_title" : "Items page"
+    }
+    return render(request, "home.html", context)
 
-        print(todo_list)
-        
-        for q in todo_list:
-            print("id", q.id)
-            print("titile", q.title)
-            print("describtion", q.describtion)
 
-        output = ",".join([q.describtion for q in todo_list])
-        return HttpResponse(output)
-    else:
-        return HttpResponse(f"Not available hhsd data")
+
+def get_data_by_id(request, id):
+    print("request",request)
+    
+    todo_list = Todo.objects.get(id=id)
+    
+    context = {
+        "items": todo_list,
+        "html_title" : "View Items page"
+    }
+    return render(request, "view_items.html", context)
+
 
 
 
 
 def create(request):
-    Todo.objects.create()
+    
+    if request.method == "POST":
+        
+         title = request.POST.get("name")
+         describtion = request.POST.get("describtion")
+         
+         print(title, describtion)
+         
+         data = Todo(title=title, describtion=describtion)
+         data.save()
+         
+         print("data is saved successfully")
+         
+        #  Todo.objects.create(title=title, describtion=describtion)
+         
+         return redirect("get-all")
+    
+    return render(request, "add_items.html")
+    
+    
+    
 
-def update(request, id, title, describtion):
+def update(request, id):
     
     todo = Todo.objects.get(id=id)
+    
+    if request.method =="POST":
+        
+        title = request.POST.get("name")
+        describtion = request.POST.get("describtion")
+         
+        todo.title = title
+        todo.describtion = describtion
+        todo.save()
+        
+        return redirect("get-all")
+   
 
-    todo.title = title
-    todo.describtion = describtion
-    todo.save()
+    context = {
+        "id" : todo.id,
+        "title": todo.title,
+        "describtion": todo.describtion
+    }
 
-    return HttpResponse(f"{todo.title} and {todo.describtion} updated")
+    return render(request, "edit_items.html", context)
     
 
     
@@ -48,7 +98,3 @@ def delete(request, id):
 
     return HttpResponse(f"{id} was deleted succesfully")
 
-
-
-def about(request):
-    return HttpResponse("this is about page")

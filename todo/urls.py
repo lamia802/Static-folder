@@ -1,8 +1,13 @@
 from django.urls import path
-from .views import get_all, about , update , delete
+from .views import create, get_all, about , update , delete ,home ,about , get_data_by_id
+
+
 urlpatterns = [
-    path("get-all/", get_all, name="index"),
-    path("about/", about, name="about" ),
+    path("add-items/", create , name="add-items"),
+    path("get-all/", get_all, name="get-all"),
+    path("home/", home, name="home"),
+    path("about/", about, name="about"),
     path("delete/<int:id>/", delete, name="delete" ),
-    path("update/<int:id>/<str:title>/<str:describtion>/", update, name="update"),
+    path("items/<int:id>/", get_data_by_id, name="get_data_by_id" ),
+    path("update/<int:id>/", update, name="update"),
 ]

@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Edit Items</title>
+</head>
+<body>
+
+<h2>Edit Items</h2>
+
+
+
+<form action="{% url 'update' id %}" method="post">
+               {% csrf_token %}
+              
+               <label for="title">Title</label>
+               <br>
+               <input type="text" value="{{title}}" id="title" name="name">
+               <br>
+               <br>
+               <label for="describtion">Describtion</label>
+               <br>
+               <textarea name="describtion"  id="describtion" >{{describtion}}</textarea>
+               <br>
+               <br>
+               <button type="submit" >Sumit</button>
+</form>
+               
+</body>
+</html>
