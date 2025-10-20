@@ -9,23 +9,27 @@
 
 <h2>Edit Items</h2>
 
+{% if messages %}
+
+{% for message in messages %}
+
+   <p>{{message}}</p>
+
+{% endfor %}
+
+{% endif %}
+
+
 
 
 <form action="{% url 'update' id %}" method="post">
                {% csrf_token %}
               
-               <label for="title">Title</label>
-               <br>
-               <input type="text" value="{{title}}" id="title" name="name">
-               <br>
-               <br>
-               <label for="describtion">Describtion</label>
-               <br>
-               <textarea name="describtion"  id="describtion" >{{describtion}}</textarea>
-               <br>
-               <br>
+              {{form.as_p}}
+
                <button type="submit" >Sumit</button>
 </form>
                
+
 </body>
 </html>

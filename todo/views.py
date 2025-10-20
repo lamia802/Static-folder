@@ -2,7 +2,8 @@ from django.shortcuts import render , redirect
 from django.http import HttpResponse
 from .models import Todo
 # Create your views here.
-
+from .form import TodoForm 
+from django.contrib import messages
 
 def home(request):
     return render(request, "home.html")
@@ -39,51 +40,74 @@ def get_data_by_id(request, id):
 
 
 
-
-
 def create(request):
     
     if request.method == "POST":
         
-         title = request.POST.get("name")
-         describtion = request.POST.get("describtion")
+        form = TodoForm(request.POST)
+        if form.is_valid():
+            form.save()
+            messages.success(request, "Add Items successfully")
+            return redirect("add-items")
+        
+        messages.error(request, "error adding items")
+        return redirect("add-items")
+
+        #  title = request.POST.get("name")
+        #  describtion = request.POST.get("describtion")
          
-         print(title, describtion)
+        #  print(title, describtion)
          
-         data = Todo(title=title, describtion=describtion)
-         data.save()
+        #  data = Todo(title=title, describtion=describtion)
+        #  data.save()
          
-         print("data is saved successfully")
+        #  print("data is saved successfully")
          
-        #  Todo.objects.create(title=title, describtion=describtion)
+        # #  Todo.objects.create(title=title, describtion=describtion)
          
-         return redirect("get-all")
+       
     
-    return render(request, "add_items.html")
+    else:
+        
+        form = TodoForm()
+        context = {
+            "form": form
+        }
+    
+        return render(request, "add_items.html", context)
     
     
     
 
 def update(request, id):
     
-    todo = Todo.objects.get(id=id)
-    
+    try:
+
+     todo = Todo.objects.get(id=id)
+    except Exception as e:
+        print(e)
+        return HttpResponse(f"{id} {e}")
+      
     if request.method =="POST":
         
-        title = request.POST.get("name")
-        describtion = request.POST.get("describtion")
-         
-        todo.title = title
-        todo.describtion = describtion
-        todo.save()
+        form = TodoForm(request.POST, instance=todo)
         
-        return redirect("get-all")
+        if form.is_valid():
+            form.save()
+            
+            messages.success(request, "Items sucessfully updated")
+            
+            return redirect("update", id=todo.id)
+        
+        messages.error("error updating items")
+        return redirect("update", id=todo.id)
    
 
+    form = TodoForm(instance=todo)
+    
     context = {
-        "id" : todo.id,
-        "title": todo.title,
-        "describtion": todo.describtion
+    "id": todo.id,
+    "form": form
     }
 
     return render(request, "edit_items.html", context)
@@ -92,9 +116,14 @@ def update(request, id):
     
 
 def delete(request, id):
-    todo = Todo.objects.get(id=id)
+    try:
+
+     todo = Todo.objects.get(id=id)
+    except Exception as e:
+        print(e)
+        return HttpResponse(f"{id} {e}")
 
     todo.delete()
-
-    return HttpResponse(f"{id} was deleted succesfully")
+    messages.success(request, "Items deleted succesfully")
+    return redirect("get-all")
 
