@@ -9,7 +9,6 @@ def home(request):
     return render(request, "home.html")
 
 
-
 def about(request):
     return render(request, "about.html")
 
@@ -43,8 +42,8 @@ def get_data_by_id(request, id):
 def create(request):
     
     if request.method == "POST":
-        
-        form = TodoForm(request.POST)
+        print("request",request.FILES)
+        form = TodoForm(request.POST, request.FILES)
         if form.is_valid():
             form.save()
             messages.success(request, "Add Items successfully")
@@ -52,21 +51,6 @@ def create(request):
         
         messages.error(request, "error adding items")
         return redirect("add-items")
-
-        #  title = request.POST.get("name")
-        #  describtion = request.POST.get("describtion")
-         
-        #  print(title, describtion)
-         
-        #  data = Todo(title=title, describtion=describtion)
-        #  data.save()
-         
-        #  print("data is saved successfully")
-         
-        # #  Todo.objects.create(title=title, describtion=describtion)
-         
-       
-    
     else:
         
         form = TodoForm()

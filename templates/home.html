@@ -23,9 +23,11 @@
     <ul>
     {% for items in data %}
         <li>id : {{items.id}}</li>
+        <li>image: <img src="{{ items.image.url }}" alt=""> </li>
         <li>title : {{items.title}}</li>
         <li>describtion: {{ items.describtion }}</li>
         <li>create at: {{ items.creat_at }}</li>
+       
         <br/>
     {% endfor %}
     </ul>
